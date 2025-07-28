@@ -1,0 +1,258 @@
+# Complete MindfulBeauty Project Development Prompt
+
+Based on our previous discussion about the updated registration system with separate customer and professional flows, here's a comprehensive prompt to build the complete project:
+
+## Project Overview Prompt
+
+**Create a full-stack Next.js beauty services platform called "MindfulBeauty" with the following specifications:**
+
+### Core Technologies
+- **Frontend**: Next.js 14 with App Router, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: Supabase Auth
+- **UI Components**: Custom components with Tailwind CSS
+- **Icons**: Lucide React
+
+### Project Structure Requirements
+
+```
+mindfulbeauty/
+├── src/
+│   ├── app/
+│   │   ├── (auth)/
+│   │   │   ├── login/page.tsx
+│   │   │   └── layout.tsx
+│   │   ├── register/
+│   │   │   ├── page.tsx (registration selection)
+│   │   │   ├── customer/page.tsx
+│   │   │   └── professional/page.tsx
+│   │   ├── admin/
+│   │   │   ├── layout.tsx (with sidebar)
+│   │   │   ├── dashboard/page.tsx
+│   │   │   ├── salons/page.tsx
+│   │   │   ├── freelancers/page.tsx
+│   │   │   └── users/page.tsx
+│   │   ├── api/
+│   │   │   ├── auth/
+│   │   │   │   ├── register-customer/route.ts
+│   │   │   │   └── register-professional/route.ts
+│   │   │   ├── salons/route.ts
+│   │   │   ├── freelancers/route.ts
+│   │   │   └── admin/
+│   │   │       ├── dashboard/route.ts
+│   │   │       └── approve-professional/route.ts
+│   │   ├── salons/page.tsx (public salon listing)
+│   │   ├── freelancers/page.tsx (public freelancer listing)
+│   │   ├── layout.tsx (root layout with header/footer)
+│   │   └── page.tsx (homepage)
+│   ├── components/
+│   │   ├── ui/ (Button, Input, Card, Modal, Table)
+│   │   ├── layout/ (Header, Footer, AdminSidebar)
+│   │   ├── forms/ (CustomerRegisterForm, ProfessionalRegisterForm, LoginForm)
+│   │   └── admin/ (Dashboard, UserTable, ApprovalActions)
+│   ├── lib/
+│   │   ├── supabase/ (client.ts, server.ts, middleware.ts)
+│   │   ├── types.ts
+│   │   ├── auth.ts
+│   │   └── utils.ts
+│   ├── hooks/
+│   │   ├── useAuth.ts
+│   │   └── useSupabase.ts
+│   └── middleware.ts
+```
+
+### Database Schema Requirements
+
+**Users Table:**
+```sql
+CREATE TABLE users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR UNIQUE NOT NULL,
+  name VARCHAR NOT NULL,
+  role VARCHAR CHECK (role IN ('admin', 'salon', 'freelancer', 'customer')) NOT NULL,
+  phone VARCHAR,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Salons Table:**
+```sql
+CREATE TABLE salons (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  business_name VARCHAR NOT NULL,
+  address TEXT NOT NULL,
+  city VARCHAR NOT NULL,
+  state VARCHAR NOT NULL,
+  postal_code VARCHAR NOT NULL,
+  description TEXT,
+  services TEXT[],
+  images TEXT[],
+  status VARCHAR CHECK (status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+**Freelancers Table:**
+```sql
+CREATE TABLE freelancers (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES users(id) ON DELETE CASCADE,
+  specialty VARCHAR NOT NULL,
+  experience_years INTEGER DEFAULT 0,
+  portfolio_images TEXT[],
+  available_locations TEXT[],
+  hourly_rate DECIMAL(10,2),
+  bio TEXT,
+  skills TEXT[],
+  status VARCHAR CHECK (status IN ('pending', 'approved', 'rejected')) DEFAULT 'pending',
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+### Registration System Requirements
+
+**Two-Tier Registration System:**
+
+1. **Customer Registration** (`/register/customer`):
+   - Simple form with: name, email, password, phone (optional)
+   - Immediate account activation
+   - Redirect to login after successful registration
+
+2. **Professional Registration** (`/register/professional`):
+   - Role selection: Salon Owner or Freelancer
+   - Conditional form fields based on selected role
+   - **Salon Fields**: business_name, address, city, state, postal_code, services, description
+   - **Freelancer Fields**: specialty, experience_years, hourly_rate, skills, available_locations, bio
+   - Account requires admin approval (status: 'pending')
+   - Email notification to admin for new registrations
+
+### Admin Panel Requirements
+
+**Dashboard Features:**
+- Real-time statistics cards (total salons, freelancers, pending approvals)
+- Recent activity feed
+- Quick action buttons for common tasks
+
+**Management Pages:**
+- **Salons Management**: View all salons, approve/reject, view details, search/filter
+- **Freelancers Management**: View all freelancers, approve/reject, view details, search/filter  
+- **Users Management**: View all users, user roles, registration dates, activity status
+
+**Approval System:**
+- Approve/reject professional registrations
+- Send email notifications on status changes
+- Bulk approval actions
+- Status change logging
+
+### Authentication & Authorization
+
+**Role-Based Access Control:**
+- **Customer**: Access to booking features (future)
+- **Salon/Freelancer**: Access to their dashboard (pending approval)
+- **Admin**: Full access to admin panel and all management features
+
+**Protected Routes:**
+- `/admin/*` - Admin only
+- `/salon/dashboard` - Approved salon owners only
+- `/freelancer/dashboard` - Approved freelancers only
+
+**Middleware Protection:**
+- Check authentication status
+- Verify user roles for protected routes
+- Redirect unauthorized users appropriately
+
+### UI/UX Requirements
+
+**Design System:**
+- Clean, modern design with Tailwind CSS
+- Responsive layout for all screen sizes
+- Consistent color scheme (primary: blue-600, secondary: gray-600)
+- Loading states for all async operations
+- Error handling with user-friendly messages
+- Form validation with real-time feedback
+
+**Components to Build:**
+- Reusable UI components (Button, Input, Card, Modal, Table)
+- Form components with proper validation
+- Admin dashboard with charts and statistics
+- Professional listings with filtering and search
+- Responsive navigation with dropdown menus
+
+### API Architecture
+
+**RESTful API Design:**
+- `POST /api/auth/register-customer` - Customer registration
+- `POST /api/auth/register-professional` - Professional registration
+- `GET /api/admin/dashboard` - Dashboard statistics
+- `GET /api/salons` - Public salon listings
+- `GET /api/freelancers` - Public freelancer listings
+- `PATCH /api/admin/approve-professional` - Approve/reject professionals
+
+**Error Handling:**
+- Consistent error response format
+- Proper HTTP status codes
+- Client-side error display
+- Server-side validation
+
+### Development Setup Instructions
+
+**Environment Variables:**
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+**Installation Commands:**
+```bash
+npx create-next-app@latest mindfulbeauty --typescript --tailwind --eslint --app
+cd mindfulbeauty
+npm install @supabase/supabase-js @supabase/auth-helpers-nextjs lucide-react
+```
+
+### Key Features to Implement
+
+**Phase 1 - Core Registration & Admin:**
+1. Two-tier registration system (customer vs professional)
+2. Supabase authentication integration
+3. Admin dashboard with statistics
+4. Professional approval workflow
+5. Role-based route protection
+
+**Phase 2 - Public Listings:**
+1. Public salon listings page with search/filter
+2. Public freelancer listings page with search/filter
+3. Professional profile pages
+4. Image upload functionality
+
+**Phase 3 - Enhanced Features:**
+1. Email notifications system
+2. Professional dashboards
+3. Booking system (future enhancement)
+4. Review and rating system (future enhancement)
+
+### Success Criteria
+
+**The completed project should:**
+- Handle separate registration flows smoothly
+- Provide comprehensive admin management capabilities  
+- Implement proper security and authorization
+- Display professional listings publicly
+- Be fully responsive and user-friendly
+- Handle errors gracefully
+- Maintain clean, scalable code architecture
+
+**Technical Requirements:**
+- TypeScript for type safety
+- Server-side rendering where appropriate
+- Optimized performance and SEO
+- Proper form validation and error handling
+- Clean component architecture
+- Consistent code formatting and structure
+
+This comprehensive prompt covers all aspects of building the MindfulBeauty platform with the updated dual registration system and admin management capabilities. The project should be built incrementally, starting with the core authentication and registration features, then expanding to include the admin panel and public-facing features.
