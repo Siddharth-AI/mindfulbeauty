@@ -1,9 +1,5 @@
 const page = () => {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      dashboard page hi muku
-    </div>
-  );
+  return <div>dashboard page</div>;
 };
 
 export default page;
