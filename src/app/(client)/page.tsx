@@ -1,7 +1,11 @@
-import React from "react";
+'use client';
 
-const page = () => {
-  return <div>home page</div>;
-};
+import FooterBar from "../components/layout/Footer";
 
-export default page;
+function Home() {
+  return (<>
+    <FooterBar />
+  </>)
+}
+
+export default Home;

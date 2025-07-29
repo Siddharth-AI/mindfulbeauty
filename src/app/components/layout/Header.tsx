@@ -1,7 +1,8 @@
-import React from "react";
+'use client';
 
-const Header = () => {
-  return <div>header</div>;
-};
+function Headder() {
+  return (<><p>headder</p>
+  </>);
+}
 
-export default Header;
+export default Headder;
