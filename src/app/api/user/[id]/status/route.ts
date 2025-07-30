@@ -1,30 +1,29 @@
-import { getUserFromRequest } from '@/app/lib/api/auth-middleware';
-import { withValidation } from '@/app/lib/api/withValidation';
-import { logUserStatusHistory } from '@/app/lib/database/queries/request-status-history';
-import { errorResponse, successResponse } from '@/app/lib/utils/api-response';
-import { patchUserStatusSchema } from '@/app/lib/validation/schemas/user';
-import { getUserById, updateUserStatus } from '@/app/services/user.service';
-import { NextRequest } from 'next/server';
+import { getUserFromRequest } from "@/app/lib/api/auth-middleware"
+import { withValidation } from "@/app/lib/api/withValidation"
+import { errorResponse, successResponse } from "@/app/lib/utils/api-response"
+import { changeUserStatus } from "@/app/lib/database/queries/users"
+import Joi from "joi"
+import type { NextRequest } from "next/server"
 
-export async function PATCH(request: NextRequest, { params }) {
-  const user = await getUserFromRequest(request, { required: true });
-  const valOrRes = await withValidation(request, patchUserStatusSchema);
-  if (valOrRes instanceof Response) return valOrRes;
+const updateUserStatusSchema = Joi.object({
+  new_status: Joi.string().valid("pending", "approved", "active", "inactive", "suspended").required(),
+  remark: Joi.string().min(2).required(),
+})
+
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   try {
-    const { new_status, remark } = valOrRes;
-    const oldUser = await getUserById(params.id);
-    if (!oldUser) return errorResponse('User not found', 404);
+    const user = await getUserFromRequest(request, { required: true })
+    const validOrRes = await withValidation(request, updateUserStatusSchema)
+    if (validOrRes instanceof Response) return validOrRes
 
-    await updateUserStatus(params.id, new_status, user.id);
-    await logUserStatusHistory({
-      user_id: params.id,
-      changed_by: user.id,
-      old_status: oldUser.is_active ? 'active' : 'inactive',
-      new_status,
-      remark,
-    });
-    return successResponse(null, 'Status updated and logged');
-  } catch (e) {
-    return errorResponse(e instanceof Error ? e.message : String(e), 400);
+    const { new_status, remark } = validOrRes
+
+    // Use the enhanced function that handles status change and logging
+    const updatedUser = await changeUserStatus(params.id, new_status, user.id, remark)
+
+    return successResponse(updatedUser, "User status updated successfully")
+  } catch (error) {
+    console.error("Update user status error:", error)
+    return errorResponse(error instanceof Error ? error.message : "Status update failed", 400)
   }
 }
