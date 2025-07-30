@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import FooterBar from "../components/layout/Footer";
 import HeadderBar from "../components/layout/Header";
-import { Image } from "lucide-react";
+import { Image, Link } from "lucide-react";
 import CustomerFeedbackSection from "../components/layout/testimonial";
 
 function Home() {
@@ -116,113 +116,66 @@ function Home() {
     },
   ];
 
-  const reviews = [
-    {
-      name: "Priya",
-      review:
-        "Absolutely loved the facial here! The ambiance is so calming and staff are wonderful.",
-      img: "https://randomuser.me/api/portraits/women/10.jpg",
-    },
-    {
-      name: "Kabir",
-      review:
-        "The massage exceeded my expectations—attention to detail and expertise were fantastic! Booking was super simple and fast. Will definitely return!",
-      img: "https://randomuser.me/api/portraits/men/21.jpg",
-    },
-    {
-      name: "Megha",
-      review:
-        "Manicure was top notch and the products smelled amazing! Highly recommend this spa.",
-      img: "https://randomuser.me/api/portraits/women/23.jpg",
-    },
-    {
-      name: "Rohan",
-      review: "Incredible hot stone massage! Comfortable and clean facilities too.",
-      img: "https://randomuser.me/api/portraits/men/22.jpg",
-    },
-    {
-      name: "Neha",
-      review:
-        "Staff gave personal attention, listened to my concerns, and made the whole visit relaxing.",
-      img: "https://randomuser.me/api/portraits/women/45.jpg",
-    },
-    {
-      name: "Arjun",
-      review: "This is my favorite spot for regular hair spas. Booking online is a breeze!",
-      img: "https://randomuser.me/api/portraits/men/13.jpg",
-    },
-    {
-      name: "Asha",
-      review:
-        "Refreshing herbal teas at reception and friendly staff. Lovely experience!",
-      img: "https://randomuser.me/api/portraits/women/52.jpg",
-    },
-    {
-      name: "Samir",
-      review:
-        "The therapist tailored the massage to my exact needs. Felt so much better after!",
-      img: "https://randomuser.me/api/portraits/men/24.jpg",
-    },
-    {
-      name: "Manusha",
-      review:
-        "Soothing music, attentive staff, and a great range of treatments. Will come again.",
-      img: "https://randomuser.me/api/portraits/women/31.jpg",
-    },
-    {
-      name: "Rahul",
-      review: "My mom enjoyed her birthday surprise—thank you for making it special!",
-      img: "https://randomuser.me/api/portraits/men/17.jpg",
-    },
-    {
-      name: "Sara",
-      review:
-        "Staff genuinely cared and gave me great skincare tips post-treatment.",
-      img: "https://randomuser.me/api/portraits/women/14.jpg",
-    },
-    {
-      name: "Daniel",
-      review:
-        "Perfect blend of professionalism and warmth. Booking appointments is so convenient.",
-      img: "https://randomuser.me/api/portraits/men/30.jpg",
-    },
-    {
-      name: "Jyoti",
-      review:
-        "Wonderful atmosphere, calming fragrances, and wonderful herbal facials.",
-      img: "https://randomuser.me/api/portraits/women/36.jpg",
-    },
-    {
-      name: "Shaun",
-      review:
-        "Had a great couple’s massage—relaxed and pampered by the end of it!",
-      img: "https://randomuser.me/api/portraits/men/26.jpg",
-    },
-    {
-      name: "Ritika",
-      review:
-        "Thrilled with the custom-made packages. Super friendly therapists and staff.",
-      img: "https://randomuser.me/api/portraits/women/20.jpg",
-    },
-    {
-      name: "Amit",
-      review:
-        "Massage chair here was so comfy! Great pitstop for tired city folks.",
-      img: "https://randomuser.me/api/portraits/men/14.jpg",
-    },
-    {
-      name: "Mina",
-      review:
-        "My skin has never felt better! Totally in love with their natural products.",
-      img: "https://randomuser.me/api/portraits/women/53.jpg",
-    },
-    {
-      name: "Adarsh",
-      review:
-        "Flexible timings, fast appointments, and amazing results every time. Thank you!",
-      img: "https://randomuser.me/api/portraits/men/18.jpg",
-    },
-  ];
+  const faqs = {
+    "Home Service": [
+      {
+        question: "What home services do you offer?",
+        answer: "We offer a wide range of home services including facials, manicures, pedicures, massages, hair spas, and waxing. Our skilled professionals bring the salon experience right to your doorstep."
+      },
+      {
+        question: "How do I book a home service appointment?",
+        answer: "You can easily book a home service appointment through our website or mobile app. Simply select your desired service, date, time, and location, and confirm your booking. You can also call us directly."
+      },
+      {
+        question: "What areas do you provide home services in?",
+        answer: "Our home services are currently available in major metropolitan areas including Delhi, Mumbai, Bangalore, Chennai, and Hyderabad. Please check our website for a complete list of service areas."
+      },
+      {
+        question: "Is there a minimum booking amount for home services?",
+        answer: "Yes, there is a minimum booking amount of ₹500 for all home service appointments. This helps us ensure the best quality service and manage our logistics efficiently."
+      },
+      {
+        question: "What products do you use for home services?",
+        answer: "We use only high-quality, professional-grade products from reputable brands for all our home services, ensuring safety, effectiveness, and a premium experience. Our products are suitable for various skin and hair types."
+      }
+    ],
+    "Salon Service": [
+      {
+        question: "Do I need an appointment for salon services?",
+        answer: "While walk-ins are welcome, we highly recommend booking an appointment for salon services to ensure availability and minimize your waiting time, especially during peak hours."
+      },
+      {
+        question: "What are your salon operating hours?",
+        answer: "Our salon typically operates from 10:00 AM to 8:00 PM, Monday through Saturday. We are closed on Sundays and major public holidays. Please check our website for specific holiday hours."
+      },
+      {
+        question: "Can I choose my stylist/therapist for salon services?",
+        answer: "Yes, you can request a specific stylist or therapist when booking your salon appointment, subject to their availability. We'll do our best to accommodate your preference."
+      },
+      {
+        question: "Do you offer group bookings or packages?",
+        answer: "Absolutely! We offer various group booking options and customized packages for special occasions like bridal parties, birthdays, and corporate events. Please contact us for details and pricing."
+      },
+      {
+        question: "What safety measures are in place at your salon?",
+        answer: "We prioritize the health and safety of our clients and staff. Our salon adheres to strict hygiene protocols, including regular sanitization, use of disposable tools where possible, and mandatory mask-wearing for staff."
+      }
+    ]
+  };
+
+  const [activeTab1, setActiveTab1] = useState("Home Service");
+  const [openIndex, setOpenIndex] = useState(null); // State to manage which FAQ item is open
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+    setOpenIndex(null); // Close any open FAQ item when switching tabs
+  };
+
+  const handleToggleFAQ = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  const currentFAQs = faqs[activeTab1];
 
   return (
     <>
@@ -576,6 +529,93 @@ function Home() {
       {/* section 7 */}
 
       <CustomerFeedbackSection />
+
+      {/* section 8 */}
+
+      <section className="py-16 bg-gray-50 font-poppins relative overflow-hidden">
+        {/* Background pattern - you might need to adjust the path */}
+        <div
+          className="absolute inset-0 z-0 opacity-5"
+          style={{
+            backgroundImage: "url('/assets/img/background-pattern.png')", // Adjust path to your actual pattern image
+            backgroundRepeat: "repeat",
+            backgroundSize: "200px", // Adjust size of the pattern elements
+          }}
+        ></div>
+
+        <div className="container mx-auto px-4 relative z-10 max-w-4xl">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 text-center mb-12">
+            Frequently Asked Questions
+          </h2>
+
+          {/* Tab Navigation */}
+          <div className="flex justify-center mb-10 space-x-6 md:space-x-10">
+            {["Home Service", "Salon Service"].map((tab) => (
+              <button
+                key={tab}
+                onClick={() => handleTabClick(tab)}
+                className={`
+                text-xl md:text-2xl font-semibold pb-2 relative
+                ${activeTab === tab
+                    ? "text-[#FF2280] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-[#FF2280] after:scale-x-100 after:transition-transform after:duration-300"
+                    : "text-gray-600 hover:text-gray-800 transition-colors after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 after:bg-transparent after:scale-x-0 hover:after:bg-gray-400 hover:after:scale-x-75 after:transition-all after:duration-300"
+                  }
+              `}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+
+          {/* FAQ Accordion List */}
+          <div className="space-y-6">
+            {currentFAQs.map((faq, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden transition-all duration-300 ease-in-out"
+              >
+                <button
+                  className="flex justify-between items-center w-full px-6 py-4 text-left focus:outline-none"
+                  onClick={() => handleToggleFAQ(index)}
+                  aria-expanded={openIndex === index ? "true" : "false"}
+                >
+                  <span className="text-lg md:text-xl font-medium text-gray-800">
+                    {faq.question}
+                  </span>
+                  <span className="text-2xl text-[#FF2280] transition-transform duration-300">
+                    {openIndex === index ? '-' : '+'}
+                  </span>
+                </button>
+                <div
+                  className={`transition-max-height duration-500 ease-in-out overflow-hidden ${openIndex === index ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+                    }`}
+                >
+                  <p className="px-6 pb-6 text-gray-600 text-base md:text-lg">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* section 9 */}
+
+      <section className="flex justify-center my-8">
+        <Link href="/login" passHref>
+          {/* Parent div must be relative and fixed size for Image fill */}
+          <div className="relative w-full max-w-[1550px] h-[306px] rounded-xl shadow-lg cursor-pointer overflow-hidden">
+            <Image
+              src="/assets/banner-section8.png" // Make sure this image exists in /public/assets/
+              alt="Register as a Professional Banner"
+              fill  /* Correct boolean prop usage */
+              className="object-cover"
+              priority
+            />
+          </div>
+        </Link>
+      </section>
 
       {/* footer section */}
       <FooterBar />
