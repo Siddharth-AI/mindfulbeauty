@@ -6,8 +6,8 @@ import HeadderBar from "../components/layout/Header";
 import { Image } from "lucide-react";
 import Link from "next/link";
 import CustomerFeedbackSection from "../components/layout/testimonial";
-// ✅ Correct for /app directory
 import { useRouter } from "next/navigation";
+import Page from "./apply/page";
 import ApplyPage from "./apply/page";
 
 function Home() {
@@ -19,9 +19,11 @@ function Home() {
 
   const [showApplyPage, setShowApplyPage] = useState(false);
 
-  if (showApplyPage) {
-    return <ApplyPage />;
-  }
+  useEffect(() => {
+    if (showApplyPage) {
+      router.push("/apply");
+    }
+  }, [showApplyPage, router]);
 
   const features = [
     {
@@ -183,118 +185,6 @@ function Home() {
       <HeadderBar />
 
       {/* Hero Section */}
-      {/* <section
-        className="
-          relative
-          w-full
-          min-h-screen
-          flex
-          flex-col
-          items-center
-          justify-center
-          bg-cover
-          bg-center
-        "
-        style={{
-          backgroundImage: "url('/assets/img/background.png')",
-          fontFamily: "Montserrat, sans-serif",
-        }}
-      >
-        {/* Overlay for readability 
-        <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/20 to-white/5 pointer-events-none" />
-        {/* Increased margin-top for further spacing 
-        <div className="relative z-10 w-full flex flex-col items-center justify-center px-4 mt-16">
-          {/* Heading full-width without pink background 
-          <div
-            className="w-screen flex items-center justify-center mb-8"
-            style={{ height: "6rem" }}
-          >
-            <h1
-              className="
-                text-3xl
-                md:text-5xl
-                font-extrabold
-                text-white
-                text-center
-                tracking-tight
-                px-4
-              "
-              style={{ fontFamily: "Montserrat, sans-serif", lineHeight: 1.2 }}
-            >
-              Where would you like to get your beauty service
-            </h1>
-          </div>
-
-          {/* Slider/toggle buttons 
-          <div className="flex gap-0 mb-6 rounded-full shadow-lg overflow-hidden">
-            <button
-              className={`px-6 py-3 font-semibold text-base transition
-                focus:outline-none
-                ${activeService === "home"
-                  ? "bg-pink-600 text-white"
-                  : "bg-white text-pink-600 border-r border-pink-200 hover:bg-pink-50"
-                }
-              `}
-              style={{
-                borderTopLeftRadius: "999px",
-                borderBottomLeftRadius: "999px",
-                fontFamily: "Montserrat, sans-serif",
-              }}
-              onClick={() => setActiveService("home")}
-              type="button"
-            >
-              Home Services
-            </button>
-            <button
-              className={`px-6 py-3 font-semibold text-base transition
-                focus:outline-none
-                ${activeService === "salon"
-                  ? "bg-pink-600 text-white"
-                  : "bg-white text-pink-600 border-l border-pink-200 hover:bg-pink-50"
-                }
-              `}
-              style={{
-                borderTopRightRadius: "999px",
-                borderBottomRightRadius: "999px",
-                fontFamily: "Montserrat, sans-serif",
-              }}
-              onClick={() => setActiveService("salon")}
-              type="button"
-            >
-              Salon Services
-            </button>
-          </div>
-
-          {/* Search Bar 
-          <form className="flex w-full max-w-xl rounded-full shadow bg-white overflow-hidden">
-            <input
-              className="flex-1 px-4 py-3 outline-none text-gray-700 text-base"
-              type="text"
-              placeholder="What are you looking for?"
-              aria-label="Service"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
-            />
-            <input
-              className="w-40 px-3 py-3 outline-none text-gray-700 text-base border-l border-gray-200"
-              type="text"
-              placeholder="Location / Pincode"
-              aria-label="Location"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
-            />
-            <button
-              className="bg-pink-600 px-6 text-white font-semibold text-base rounded-full hover:bg-pink-700 transition ml-2"
-              type="submit"
-              style={{ fontFamily: "Montserrat, sans-serif" }}
-            >
-              Search
-            </button>
-          </form>
-
-          {/* Toggleable (slider) content below 
-          {renderToggledContent()}
-        </div>
-      </section> */}
-
 
       <section
         className="
@@ -726,20 +616,20 @@ function Home() {
       </section >
 
       {/* section 9 */}
-      <div className="w-full flex justify-center items-center py-10 bg-white">
+      <center>
         <div
-          className="relative w-4/5 max-w-[1550px] h-[306px] rounded-xl shadow-lg overflow-hidden cursor-pointer flex justify-center items-center bg-white"
-          onClick={() => router.push("/apply")} // route to the ApplyPage URL
+          className="relative w-4/5 max-w-[1550px] h-[306px] overflow-hidden cursor-pointer flex justify-center items-center bg-white"
+          onClick={() => router.push("/apply")}
         >
           <img
             src="/assets/img/register.png"
             alt="Register as a Professional Banner"
             fill
-            className="object-contain"
             priority
+            style={{ objectFit: "contain" }}
           />
         </div>
-      </div>
+      </center>
 
       {/* footer section */}
       < FooterBar />
