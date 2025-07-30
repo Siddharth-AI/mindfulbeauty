@@ -1,15 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { apiSlice } from './slice/apiSlice';
-import employeeReducer from './slice/employeeSlice';
+import authReducer from './slice/authSlice'; // import your reducer
 
 export const store = configureStore({
   reducer: {
-    [apiSlice.reducerPath]: apiSlice.reducer,
-    employee: employeeReducer,
+    auth: authReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
+// Standard types for hooks
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

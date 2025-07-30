@@ -1,4 +1,4 @@
-import { CreateEmployeeData, CreateUserData, Employee, UpdateEmployeeData, UpdateUserData, User } from "../types";
+import { CreateUserData, UpdateUserData, User } from "../types";
 
 export interface Database {
   public: {
@@ -7,11 +7,6 @@ export interface Database {
         Row: User;
         Insert: CreateUserData;
         Update: UpdateUserData;
-      };
-      employees: {
-        Row: Employee;
-        Insert: CreateEmployeeData;
-        Update: UpdateEmployeeData;
       };
     };
   };

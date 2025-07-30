@@ -4,7 +4,7 @@ import { User, CreateUserData, UpdateUserData } from '../../types/user';
 export const findUserByEmail = async (email: string): Promise<User | null> => {
   try {
     const { data, error } = await supabase
-      .from('users')
+      .from('user')
       .select(`
         id,
         name,
@@ -14,8 +14,9 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
         address,
         city,
         profile_image,
-        role,
+        type,
         is_active,
+        is_admin,
         access_token,
         otp,
         created_at,
@@ -40,7 +41,7 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
 export const findUserByMobile = async (mobile: string): Promise<User | null> => {
   try {
     const { data, error } = await supabase
-      .from('users')
+      .from('user')
       .select(`
         id,
         name,
@@ -50,10 +51,11 @@ export const findUserByMobile = async (mobile: string): Promise<User | null> => 
         address,
         city,
         profile_image,
-        role,
+        type,
         is_active,
         access_token,
         otp,
+        is_admin,
         created_at,
         updated_at
       `)
@@ -76,7 +78,7 @@ export const findUserByMobile = async (mobile: string): Promise<User | null> => 
 export const createUser = async (userData: CreateUserData): Promise<User> => {
   try {
     const { data, error } = await supabaseAdmin
-      .from('users')
+      .from('user')
       .insert({
         name: userData.name,
         email: userData.email.toLowerCase(),
@@ -85,7 +87,7 @@ export const createUser = async (userData: CreateUserData): Promise<User> => {
         address: userData.address || null,
         city: userData.city || null,
         profile_image: userData.profile_image || null,
-        role: userData.role || 'user',
+        type: userData.type || 'user',
         is_active: true,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
@@ -99,7 +101,7 @@ export const createUser = async (userData: CreateUserData): Promise<User> => {
         address,
         city,
         profile_image,
-        role,
+        type,
         is_active,
         access_token,
         otp,
@@ -123,7 +125,7 @@ export const createUser = async (userData: CreateUserData): Promise<User> => {
 export const updateUser = async (id: string, updateData: UpdateUserData): Promise<User> => {
   try {
     const { data, error } = await supabaseAdmin
-      .from('users')
+      .from('user')
       .update({
         ...updateData
       })
@@ -137,7 +139,7 @@ export const updateUser = async (id: string, updateData: UpdateUserData): Promis
         address,
         city,
         profile_image,
-        role,
+        type,
         is_active,
         access_token,
         otp,
@@ -164,7 +166,7 @@ export const checkUserExists = async (
 ): Promise<{ emailExists: boolean; mobileExists: boolean }> => {
   try {
     const { data, error } = await supabase
-      .from('users')
+      .from('user')
       .select('email, mobile_no')
       .or(`email.eq.${email.toLowerCase()},mobile_no.eq.${mobile}`)
 
@@ -181,4 +183,34 @@ export const checkUserExists = async (
     console.error('Error in checkUserExists:', error);
     throw error;
   }
+};
+
+export const getAllUsers = async (excludeAdmins = false): Promise<User[]> => {
+  let query = supabase.from('user').select('*').eq('is_delete', false);
+  if (excludeAdmins) query = query.eq('is_admin', false);
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+  return data as User[];
+};
+
+export const findUserById = async (id: string): Promise<User | null> => {
+  const { data, error } = await supabase.from('user').select('*').eq('id', id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data as User | null;
+};
+
+export const softDeleteUserRecord = async (id: string, updated_by?: string): Promise<User> => {
+  const { data, error } = await supabaseAdmin.from('user')
+    .update({ is_delete: true, is_active: false, updated_by, updated_at: new Date().toISOString() })
+    .eq('id', id).single();
+  if (error) throw new Error(error.message);
+  return data as User;
+};
+
+export const updateUserStatusInDB = async (id: string, isActive: boolean, updated_by?: string): Promise<User> => {
+  const { data, error } = await supabaseAdmin.from('user')
+    .update({ is_active: isActive, updated_by, updated_at: new Date().toISOString() })
+    .eq('id', id).single();
+  if (error) throw new Error(error.message);
+  return data as User;
 };

@@ -27,7 +27,7 @@ export interface JWTPayload {
   id: string;
   email: string;
   name: string;
-  phone_no?: string;
+  mobile_no?: string;
   is_active: boolean;
   iat?: number;
   exp?: number;

@@ -1,4 +1,5 @@
 export interface User {
+  is_admin: boolean;
   id: string;
   name: string;
   email: string;
@@ -7,7 +8,7 @@ export interface User {
   address?: string | null;
   city?: string | null;
   profile_image?: string | null;
-  role: string;
+  type: string;
   is_active: boolean;
   is_deleted?: boolean;
   access_token?: string | null;
@@ -24,7 +25,8 @@ export interface CreateUserData {
   address?: string | null;
   city?: string | null;
   profile_image?: string | null;
-  role?: string;
+  type?: string;
+  created_by?: string | null;
 }
 
 export interface UpdateUserData {
@@ -36,5 +38,5 @@ export interface UpdateUserData {
   profile_image?: string | null;
   access_token?: string | null;
   is_active?: boolean;
-  updated_at?: string;
+  updated_by?: string | null;
 }

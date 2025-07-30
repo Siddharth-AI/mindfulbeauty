@@ -44,8 +44,9 @@ export const registerUser = async (userData: CreateUserData) => {
       id: newUser.id,
       email: newUser.email,
       name: newUser.name,
-      role: newUser.role,
+      type: newUser.type,
       is_active: newUser.is_active,
+      is_admin: newUser.is_admin
     });
 
     const refreshToken = generateRefreshToken(newUser.id);
@@ -105,8 +106,9 @@ export const loginUser = async (identifier: string, password: string) => {
       id: user.id,
       email: user.email,
       name: user.name,
-      role: user.role,
+      type: user.type,
       is_active: user.is_active,
+      is_admin: user.is_admin
     });
 
     const refreshToken = generateRefreshToken(user.id);
