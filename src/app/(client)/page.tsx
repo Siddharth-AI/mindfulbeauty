@@ -3,27 +3,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import FooterBar from "../components/layout/Footer";
 import HeadderBar from "../components/layout/Header";
-import { Image, Link } from "lucide-react";
+import { Image } from "lucide-react";
+import Link from "next/link";
 import CustomerFeedbackSection from "../components/layout/testimonial";
+// ✅ Correct for /app directory
+import { useRouter } from "next/navigation";
 
 function Home() {
   // Track which tab is selected
   const [activeService, setActiveService] = useState("home");
   const [startIdx, setStartIdx] = useState(0);
-  const intervalRef = useRef();
-
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setStartIdx((prev) => (prev + 1) % reviews.length);
-    }, 15000); // 15 seconds
-
-    return () => clearInterval(intervalRef.current);
-  }, []);
-
-  // Helper to get 3 reviews, wrap-around if needed
-  const getVisibleReviews = () => {
-    return [0, 1, 2].map((offset) => reviews[(startIdx + offset) % reviews.length]);
-  };
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const router = useRouter();
 
   const features = [
     {
@@ -116,7 +107,10 @@ function Home() {
     },
   ];
 
-  const faqs = {
+  // Define the FAQ keys as a union type
+  type FAQTab = "Home Service" | "Salon Service";
+
+  const faqs: Record<FAQTab, { question: string; answer: string }[]> = {
     "Home Service": [
       {
         question: "What home services do you offer?",
@@ -163,15 +157,15 @@ function Home() {
     ]
   };
 
-  const [activeTab1, setActiveTab1] = useState("Home Service");
-  const [openIndex, setOpenIndex] = useState(null); // State to manage which FAQ item is open
+  const [activeTab1, setActiveTab1] = useState<FAQTab>("Home Service");
+  const [openIndex, setOpenIndex] = useState<null | number>(null); // State to manage which FAQ item is open
 
-  const handleTabClick = (tab) => {
+  const handleTabClick = (tab: React.SetStateAction<string>) => {
     setActiveTab(tab);
     setOpenIndex(null); // Close any open FAQ item when switching tabs
   };
 
-  const handleToggleFAQ = (index) => {
+  const handleToggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
@@ -182,7 +176,7 @@ function Home() {
       <HeadderBar />
 
       {/* Hero Section */}
-      <section
+      {/* <section
         className="
           relative
           w-full
@@ -199,11 +193,11 @@ function Home() {
           fontFamily: "Montserrat, sans-serif",
         }}
       >
-        {/* Overlay for readability */}
+        {/* Overlay for readability 
         <div className="absolute inset-0 bg-gradient-to-b from-white/60 via-white/20 to-white/5 pointer-events-none" />
-        {/* Increased margin-top for further spacing */}
+        {/* Increased margin-top for further spacing 
         <div className="relative z-10 w-full flex flex-col items-center justify-center px-4 mt-16">
-          {/* Heading full-width without pink background */}
+          {/* Heading full-width without pink background 
           <div
             className="w-screen flex items-center justify-center mb-8"
             style={{ height: "6rem" }}
@@ -224,7 +218,7 @@ function Home() {
             </h1>
           </div>
 
-          {/* Slider/toggle buttons */}
+          {/* Slider/toggle buttons 
           <div className="flex gap-0 mb-6 rounded-full shadow-lg overflow-hidden">
             <button
               className={`px-6 py-3 font-semibold text-base transition
@@ -264,7 +258,7 @@ function Home() {
             </button>
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar 
           <form className="flex w-full max-w-xl rounded-full shadow bg-white overflow-hidden">
             <input
               className="flex-1 px-4 py-3 outline-none text-gray-700 text-base"
@@ -289,13 +283,136 @@ function Home() {
             </button>
           </form>
 
-          {/* Toggleable (slider) content below */}
+          {/* Toggleable (slider) content below 
           {renderToggledContent()}
         </div>
-      </section>
+      </section> */}
+
+
+      <section
+        className="
+        relative
+        w-full
+        min-h-screen
+        flex
+        flex-col
+        items-center
+        justify-center
+        bg-cover
+        bg-center
+      "
+        style={{
+          backgroundImage: "url('/assets/img/background.png')",
+          fontFamily: "Montserrat, sans-serif",
+        }}
+      >
+        {/* No blurred or overlay effect; background image is sharp */}
+
+        {/* Content pushed down 25% from top */}
+        <div className="relative z-10 w-full flex flex-col items-center justify-center px-4 mt-[25vh]">
+          {/* Optional: transparent background bar behind heading */}
+          <div className="relative w-full xl:h-[80px] lg:h-[80px] md:h-[65px] sm:h-[70px] h-[70px] text-center" />
+
+          {/* Absolutely positioned heading text */}
+          <div className="absolute top-1 left-0 right-0 text-center max-lg:top-4 max-md:top-5 max-sm:top-2 px-4">
+            <div className="relative w-full xl:h-[80px] lg:h-[80px] md:h-[65px] sm:h-[70px] h-[70px] text-center bg-black/50 text-white">
+              < h1
+                className="
+              font- light
+              font-Montserrat
+              leading-[1.2]
+            w-full
+            xl:text-[50px]
+            lg:text-[45px]
+            md:text-[35px]
+            sm:text-[30px]
+            text-[24px]
+            text-mindfulWhite
+            mx-auto
+            mix-blend-overlay
+            " style={{ marginTop: "125px", color: 'white' }}
+              >
+                Where would you like to get your beauty service
+              </h1>
+            </div>
+          </div>
+
+          <div className="mt-[90px] w-full max-w-xl flex flex-col items-center" >
+            {/* Toggle buttons */}
+            <div className="flex gap-0 mb-6 rounded-full shadow-lg overflow-hidden w-full" style={{ marginTop: "50px" }}>
+              <button
+                className={`px-6 py-3 font-semibold text-base transition focus:outline-none flex-1 text-center
+                ${activeService === "home"
+                    ? "bg-pink-600 text-white"
+                    : "bg-white text-pink-600 border-r border-pink-200 hover:bg-pink-50"
+                  }
+              `}
+                style={{
+                  borderTopLeftRadius: "999px",
+                  borderBottomLeftRadius: "999px",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+                onClick={() => setActiveService("home")}
+                type="button"
+              >
+                Home Services
+              </button>
+              <button
+                className={`px-6 py-3 font-semibold text-base transition focus:outline-none flex-1 text-center
+                ${activeService === "salon"
+                    ? "bg-pink-600 text-white"
+                    : "bg-white text-pink-600 border-l border-pink-200 hover:bg-pink-50"
+                  }
+              `}
+                style={{
+                  borderTopRightRadius: "999px",
+                  borderBottomRightRadius: "999px",
+                  fontFamily: "Montserrat, sans-serif",
+                }}
+                onClick={() => setActiveService("salon")}
+                type="button"
+              >
+                Salon Services
+              </button>
+            </div>
+
+            {/* Search Bar */}
+            <form className="flex w-full rounded-full shadow bg-white overflow-hidden">
+              <input
+                className="flex-1 px-4 py-3 outline-none text-gray-700 text-base"
+                type="text"
+                placeholder="What are you looking for?"
+                aria-label="Service"
+                style={{ fontFamily: "Montserrat, sans-serif" }}
+              />
+              <input
+                className="w-40 px-3 py-3 outline-none text-gray-700 text-base border-l border-gray-200"
+                type="text"
+                placeholder="Location / Pincode"
+                aria-label="Location"
+                style={{ fontFamily: "Montserrat, sans-serif" }}
+              />
+              <button
+                className="bg-pink-600 px-6 text-white font-semibold text-base rounded-full hover:bg-pink-700 transition ml-2"
+                type="submit"
+                style={{ fontFamily: "Montserrat, sans-serif" }}
+              >
+                Search
+              </button>
+            </form>
+          </div>
+
+          {/* Toggleable content */}
+          <div className="w-full mt-8 max-w-5xl px-4">
+            {renderToggledContent && renderToggledContent()}
+          </div>
+        </div >
+      </section >
+
+
 
       {/* Second Section */}
-      <section className="w-full bg-white py-16 px-2 md:px-8">
+      < section className="w-full bg-white py-16 px-2 md:px-8" >
         <div className="mx-auto max-w-7xl grid grid-cols-1 gap-y-14 gap-x-8 sm:grid-cols-2 md:grid-cols-4">
           {features.map((feature) => (
             <div key={feature.number} className="relative flex flex-col items-start">
@@ -332,10 +449,10 @@ function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </section >
 
       {/* Third Section: Featured Services */}
-      <section className="w-full bg-white py-14 flex flex-col items-center">
+      < section className="w-full bg-white py-14 flex flex-col items-center" >
         <h2
           className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-8 tracking-tight"
           style={{ fontFamily: "Montserrat, sans-serif" }}
@@ -368,16 +485,17 @@ function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Section 4: Bridal Packages */}
-      <section
+      < section
         className="w-full py-14 flex flex-col items-center"
         style={{
           backgroundImage: "url('/assets/img/bridalbg.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
-        }}
+        }
+        }
       >
         <h2
           className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-10 tracking-tight"
@@ -412,18 +530,18 @@ function Home() {
             </div>
           ))}
         </div>
-      </section>
+      </section >
 
 
       {/* this is Section 5 */}
-      <section className="max-w-3xl mx-auto min-h-screen py-12 flex flex-col items-center">
+      < section className="max-w-3xl mx-auto min-h-screen py-12 flex flex-col items-center" >
         {/* Main Heading */}
-        <h1 className="text-[2.25rem] leading-[2.5rem] font-extrabold mb-8 text-center">
+        < h1 className="text-[2.25rem] leading-[2.5rem] font-extrabold mb-8 text-center" >
           Recommended Best
-        </h1>
+        </h1 >
 
         {/* Tabs */}
-        <div className="flex space-x-14 mb-8">
+        < div className="flex space-x-14 mb-8" >
           <button
             className={`text-[1.125rem] font-semibold pb-1 border-b-2 ${activeTab === "salon"
               ? "border-pink-500 text-pink-600"
@@ -442,10 +560,10 @@ function Home() {
           >
             Specialist from your Location
           </button>
-        </div>
+        </div >
 
         {/* Empty State */}
-        <div className="flex flex-col items-center mt-16">
+        < div className="flex flex-col items-center mt-16" >
           <h2 className="text-[1.25rem] font-bold mb-2">Oops! Nothing Here</h2>
           <p
             className="text-base text-gray-600 text-center mb-8"
@@ -468,13 +586,13 @@ function Home() {
               <circle cx="36" cy="32" r="1" fill="#6B7280" />
             </svg>
           </div>
-        </div>
-      </section>
+        </div >
+      </section >
 
       {/* this is secton 6 */}
 
 
-      <section className="bg-mindfulLightPink py-[60px] overflow-x-hidden bg-pink-50">
+      < section className="bg-mindfulLightPink py-[60px] overflow-x-hidden bg-pink-50" >
         <div className="container mx-auto px-4 relative">
           <div className="text-center">
             <h2 className="font-Montserrat text-[40px] text-mindfulBlack font-bold mb-[30px] max-lg:text-[35px] max-md:text-[30px] max-md:mb-[20px] max-sm:text-[24px]">
@@ -524,24 +642,24 @@ function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* section 7 */}
 
-      <CustomerFeedbackSection />
+      < CustomerFeedbackSection />
 
       {/* section 8 */}
 
-      <section className="py-16 bg-gray-50 font-poppins relative overflow-hidden">
+      < section className="py-16 bg-gray-50 font-poppins relative overflow-hidden" >
         {/* Background pattern - you might need to adjust the path */}
-        <div
+        < div
           className="absolute inset-0 z-0 opacity-5"
           style={{
             backgroundImage: "url('/assets/img/background-pattern.png')", // Adjust path to your actual pattern image
             backgroundRepeat: "repeat",
             backgroundSize: "200px", // Adjust size of the pattern elements
           }}
-        ></div>
+        ></div >
 
         <div className="container mx-auto px-4 relative z-10 max-w-4xl">
           <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 text-center mb-12">
@@ -598,27 +716,29 @@ function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section >
 
       {/* section 9 */}
 
-      <section className="flex justify-center my-8">
-        <Link href="/login" passHref>
-          {/* Parent div must be relative and fixed size for Image fill */}
-          <div className="relative w-full max-w-[1550px] h-[306px] rounded-xl shadow-lg cursor-pointer overflow-hidden">
-            <Image
-              src="/assets/banner-section8.png" // Make sure this image exists in /public/assets/
-              alt="Register as a Professional Banner"
-              fill  /* Correct boolean prop usage */
-              className="object-cover"
-              priority
-            />
-          </div>
+      < div className="w-full flex justify-center items-center py-10 bg-white" >
+        <Link href="">
+          <center>
+            <div className="relative w-4/5 max-w-[1550px] h-[306px] rounded-xl shadow-lg overflow-hidden cursor-pointer flex justify-center items-center bg-white">
+              <img
+                src="/assets/img/register.png"
+                alt="Register as a Professional Banner"
+                fill
+                className="object-cover"
+                priority
+                sizes="(min-width: 1200px) 1240px, 80vw"
+              />
+            </div>
+          </center>
         </Link>
-      </section>
+      </div >
 
       {/* footer section */}
-      <FooterBar />
+      < FooterBar />
     </>
   );
 }
@@ -626,5 +746,3 @@ function Home() {
 export default Home;
 
 
-
-{/* <div class="relative"><div class="xl:h-[80px] lg:h-[80px] md:h-[65px] sm:h-[70px] h-[70px] text-center bg-mindfulBlack mix-blend-overlay"></div><div class="absolute top-1 left-0 right-0 text-center max-lg:top-4 max-md:top-5 max-sm:top-2"><h1 class="font-Montserrat font-light leading-custom-line-height w-full xl:text-[50px] lg:text-[45px] md:text-[35px] sm:text-[30px] text-[24px] text-mindfulWhite">Where would you like to get your beauty service</h1></div></div> */ }
