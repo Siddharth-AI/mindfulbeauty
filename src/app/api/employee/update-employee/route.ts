@@ -1,33 +1,41 @@
-import { NextResponse } from 'next/server';
-import supabase from '@/app/lib/supabase/client';
+import { NextRequest } from 'next/server';
+import { editEmployee } from '@/app/services/employee.service';
+import { successResponse, errorResponse, notFoundResponse } from '@/app/lib/utils/api-response';
 
-import {
-  updateEmployeeSchema,
-} from '@/app/lib/validation/employee';
-
-
-// PATCH: Update
-export async function PATCH(request: Request) {
+export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { error, value } = updateEmployeeSchema.validate(body, { abortEarly: false });
 
-    if (error)
-      return NextResponse.json({ errors: error.details.map(e => e.message) }, { status: 400 });
+    console.log('Update employee request body:', body);
 
-    const { id, ...updateData } = value;
-    const { data, error: supabaseError } = await supabase
-      .from('employee')
-      .update(updateData)
-      .eq('id', id).select();
+    if (!body.id) {
+      return errorResponse('Employee ID is required', 400);
+    }
 
-    if (supabaseError)
-      return NextResponse.json({ error: supabaseError.message }, { status: 500 });
+    const employee = await editEmployee(body.id, body);
 
-    return NextResponse.json({ success: true, message: 'Employee updated', data }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    return successResponse(employee, 'Employee updated successfully');
+  } catch (error) {
+    console.error('Update employee error:', error);
+
+    // Handle specific error types
+    if (error instanceof Error) {
+      if (error.message.includes('not found')) {
+        return notFoundResponse('Employee not found');
+      }
+      if (error.message.includes('already registered')) {
+        return errorResponse(error.message, 409); // Conflict
+      }
+    }
+
+    return errorResponse(
+      error instanceof Error ? error.message : 'Failed to update employee',
+      400
+    );
   }
 }
 
-
+// Alternative PUT method
+export async function PUT(request: NextRequest) {
+  return PATCH(request);
+}

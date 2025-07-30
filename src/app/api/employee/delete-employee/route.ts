@@ -1,32 +1,35 @@
-import { NextResponse } from 'next/server';
-import supabase from '@/app/lib/supabase/client';
+import { errorResponse, notFoundResponse, successResponse } from '@/app/lib/utils/api-response';
+import { removeEmployee } from '@/app/services/employee.service';
+import { NextRequest } from 'next/server';
+// import { removeEmployee } from '@/app/test/services/employee.service';
+// import { successResponse, errorResponse, notFoundResponse } from '@/app/lib/test/utils/api-response';
 
-import {
-  deleteEmployeeQuerySchema
-} from '@/app/lib/validation/employee';
-
-
-// DELETE: Soft-delete (via query param)
-export async function DELETE(request: Request) {
+export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const { error } = deleteEmployeeQuerySchema.validate({ id });
 
-    if (error)
-      return NextResponse.json({ errors: error.details.map(e => e.message) }, { status: 400 });
+    if (!id) {
+      return errorResponse('Employee ID is required', 400);
+    }
 
-    const { data, error: supabaseError } = await supabase
-      .from('employee')
-      .update({ isActive: false })
-      .eq('id', id).select();
+    console.log('Deleting employee with ID:', id);
 
-    if (supabaseError)
-      return NextResponse.json({ error: supabaseError.message }, { status: 500 });
+    const employee = await removeEmployee(id);
 
-    return NextResponse.json({ success: true, message: 'Employee deactivated', data }, { status: 200 });
-  } catch (err) {
-    return NextResponse.json({ error: String(err) }, { status: 500 });
+    return successResponse(employee, 'Employee deactivated successfully');
+  } catch (error) {
+    console.error('Delete employee error:', error);
+
+    if (error instanceof Error) {
+      if (error.message.includes('not found')) {
+        return notFoundResponse('Employee not found');
+      }
+    }
+
+    return errorResponse(
+      error instanceof Error ? error.message : 'Failed to deactivate employee',
+      400
+    );
   }
 }
-
