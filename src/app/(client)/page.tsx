@@ -1,7 +1,13 @@
-import React from "react";
+'use client';
 
-const page = async () => {
-  return <div>home page</div>;
-};
+import FooterBar from "../components/layout/Footer";
+import HeadderBar from "../components/layout/Header";
 
-export default page;
+function Home() {
+  return (<>
+    <HeadderBar />
+    <FooterBar />
+  </>)
+}
+
+export default Home;
