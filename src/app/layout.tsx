@@ -35,11 +35,11 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/icon?family=Material+Icons"
+          href="https://fonts.googleapis.com/css?family=GFS Didot"
           rel="stylesheet"
         />
         <link
-          href="https://fonts.googleapis.com/css?family=GFS Didot"
+          href="https://fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet"
         />
       </head>
