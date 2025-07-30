@@ -26,9 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div>
-          import your sidebar component here so we can see on ever page ok
-        </div>
+    
         {children}
       </body>
     </html>
