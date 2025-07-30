@@ -1,6 +1,6 @@
 // import React, { useState, useEffect } from "react";
 
-// // Sample menu data
+// // Menu data
 // const MENU_STRUCTURE = [
 //   { type: "auth", label: "Login", icon: "lock" },
 //   { type: "auth", label: "Register", icon: "person_add" },
@@ -30,23 +30,22 @@
 // ];
 
 // const HeaderBar = () => {
-//   // Simulated user state (replace with real auth logic)
-//   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//   const [user, setUser] = useState(null); // null=guest, or { name: "UserName" }
+//   // Replace this with real auth logic
+//   const [user, setUser] = useState(null); // null=guest, or { name: "User" }
 
 //   const [isMenuOpen, setIsMenuOpen] = useState(false);
 //   const [isScrolled, setIsScrolled] = useState(false);
 //   const [openDropdown, setOpenDropdown] = useState(""); // tracks which submenu is open
 
-//   // Scroll listener to change header bg color
+//   // Handle header color on scroll
 //   useEffect(() => {
 //     const handleScroll = () => setIsScrolled(window.scrollY > 60);
 //     window.addEventListener("scroll", handleScroll, { passive: true });
 //     return () => window.removeEventListener("scroll", handleScroll);
 //   }, []);
 
-//   // Render icons for Login/Register
-//   const renderAuthIcon = (label: string) => (
+//   // Icon for Login/Register using Material Icons
+//   const renderAuthIcon = (label) => (
 //     <span
 //       className="material-icons align-middle text-pink-600 text-base mr-1"
 //       style={{ verticalAlign: "middle" }}
@@ -55,13 +54,11 @@
 //     </span>
 //   );
 
-//   // Menu item component - handles main and submenu items
-//   const MenuItem = ({ label, isSubItem, onClick }) => (
+//   // Main and submenu item, styled the same (submenu indented)
+//   const MenuItem = ({ label, isSubItem }) => (
 //     <div
-//       onClick={onClick}
-//       // Same font size, weight, and style for sub and main items
-//       className={`w-full cursor-pointer px-4 py-2 transition-colors duration-200 
-//         ${isSubItem ? "pl-10" : "pl-4"}  /* indent sub items */
+//       className={`w-full cursor-pointer px-4 py-2 transition-colors duration-200
+//         ${isSubItem ? "pl-10" : "pl-4"}
 //         font-bold text-lg text-gray-900 hover:text-pink-600 select-none`}
 //       style={{ fontFamily: "Montserrat, sans-serif" }}
 //     >
@@ -69,19 +66,15 @@
 //     </div>
 //   );
 
-//   // Render menu structure
+//   // Whole navigation menu including user greeting and submenus
 //   const renderMenu = () => (
 //     <nav className="mt-6 w-full" style={{ fontFamily: "Montserrat, sans-serif" }}>
 //       <ul className="space-y-1">
-//         {/* User greeting */}
 //         <li
 //           className="px-4 py-2 text-base font-semibold text-gray-800 border-b border-gray-200"
-//           style={{ fontFamily: "Montserrat, sans-serif" }}
 //         >
 //           {user ? `Hello, ${user.name}` : "Hello, Guest"}
 //         </li>
-
-//         {/* Auth Links */}
 //         <li className="flex items-center px-4 py-2 space-x-2 font-semibold text-gray-900 select-none">
 //           {renderAuthIcon("Login")}
 //           <span className="hover:text-pink-600 cursor-pointer">Login</span>
@@ -89,20 +82,16 @@
 //           {renderAuthIcon("Register")}
 //           <span className="hover:text-pink-600 cursor-pointer">Register</span>
 //         </li>
-
 //         <li>
 //           <hr className="my-2 border-t border-gray-200" />
 //         </li>
-
-//         {/* Main Menu Items */}
 //         {MENU_STRUCTURE.filter(i => i.type === "main").map((item) => (
-//           <li key={item.label} className="">
+//           <li key={item.label}>
 //             {item.subItems ? (
 //               <div>
-//                 {/* Dropdown Header */}
 //                 <button
 //                   onClick={() => setOpenDropdown(openDropdown === item.label ? "" : item.label)}
-//                   className={`w-full flex justify-between items-center cursor-pointer px-4 py-2 text-lg font-bold transition-colors duration-200 focus:outline-none 
+//                   className={`w-full flex justify-between items-center cursor-pointer px-4 py-2 text-lg font-bold transition-colors duration-200 focus:outline-none
 //                     ${openDropdown === item.label ? "text-pink-600" : "text-gray-900"}`}
 //                   style={{ fontFamily: "Montserrat, sans-serif" }}
 //                 >
@@ -114,10 +103,8 @@
 //                     expand_more
 //                   </span>
 //                 </button>
-
-//                 {/* Submenu Items (only show if open) */}
 //                 {openDropdown === item.label && (
-//                   <ul className="ml-0">
+//                   <ul>
 //                     {item.subItems.map((subLabel) => (
 //                       <li key={subLabel}>
 //                         <MenuItem label={subLabel} isSubItem />
@@ -129,8 +116,6 @@
 //             ) : (
 //               <MenuItem label={item.label} />
 //             )}
-
-//             {/* Divider after High Thinking and High Talent */}
 //             {["High Thinking", "High Talent"].includes(item.label) && (
 //               <hr className="my-2 border-t border-gray-200" />
 //             )}
@@ -148,7 +133,6 @@
 //         style={{ fontFamily: "Montserrat, sans-serif" }}
 //       >
 //         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
-//           {/* Logo & Tagline */}
 //           <div className="flex items-center select-none">
 //             <div className="rounded-full border-4 border-yellow-300 w-7 h-7 flex items-center justify-center mr-2" />
 //             <div>
@@ -166,7 +150,6 @@
 //               </div>
 //             </div>
 //           </div>
-//           {/* Menu Icon */}
 //           <div>
 //             <button
 //               aria-label="Menu"
@@ -179,23 +162,20 @@
 //             </button>
 //           </div>
 //         </div>
-//         {/* Pink underline */}
 //         <div
 //           className={`h-1 w-full transition-colors duration-300 ${isScrolled ? "bg-pink-600" : "bg-transparent"
 //             }`}
 //         />
 //       </header>
 
-//       {/* Menu Drawer */}
+//       {/* 25% width side menu and 75% transparent glass overlay */}
 //       {isMenuOpen && (
 //         <>
-//           {/* Overlay */}
 //           <div
-//             className="fixed inset-0 bg-black bg-opacity-75 backdrop-blur-sm z-40"
+//             className="fixed inset-0 bg-white bg-opacity-25 backdrop-blur-md z-40"
 //             onClick={() => setIsMenuOpen(false)}
 //             style={{ transition: "background 0.3s" }}
 //           />
-//           {/* Side Menu */}
 //           <aside
 //             className="fixed top-0 right-0 h-full w-1/4 bg-white z-50 shadow-2xl flex flex-col"
 //             style={{
@@ -221,6 +201,7 @@
 // };
 
 // export default HeaderBar;
+
 
 import React, { useState, useEffect } from "react";
 
@@ -386,10 +367,7 @@ const HeaderBar = () => {
             </button>
           </div>
         </div>
-        <div
-          className={`h-1 w-full transition-colors duration-300 ${isScrolled ? "bg-pink-600" : "bg-transparent"
-            }`}
-        />
+        {/* Pink bottom border line removed */}
       </header>
 
       {/* 25% width side menu and 75% transparent glass overlay */}
