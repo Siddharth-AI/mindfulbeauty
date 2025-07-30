@@ -1,14 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { apiSlice } from './slice/apiSlice';
-import employeeReducer from './slice/employeeSlice';
 
 export const store = configureStore({
   reducer: {
-    [apiSlice.reducerPath]: apiSlice.reducer,
-    employee: employeeReducer,
+    // यहां कोई रिड्यूसर नहीं है
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(apiSlice.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
