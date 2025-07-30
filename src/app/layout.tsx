@@ -1,11 +1,11 @@
+import type React from "react";
 /* eslint-disable @next/next/google-font-display */
 /* eslint-disable @next/next/no-page-custom-font */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Provider } from "react-redux";
-import { store } from "./store/store";
 import ReduxProvider from "./providers/ReduxProvider";
+import ToastContainerConfig from "./components/ToastContainerConfig";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -45,7 +45,12 @@ export default function RootLayout({
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <ReduxProvider>{children}</ReduxProvider>
+        <>
+          <ReduxProvider>
+            {children}
+            <ToastContainerConfig />
+          </ReduxProvider>
+        </>
       </body>
     </html>
   );
