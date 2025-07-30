@@ -7,6 +7,7 @@ export interface TokenPayload extends JwtPayload {
   name: string;
   role?: string;
   is_active: boolean;
+  is_admin: boolean;
 }
 
 export const generateAccessToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
