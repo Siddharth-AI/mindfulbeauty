@@ -254,20 +254,21 @@ const MENU_STRUCTURE = [
 ];
 
 const HeaderBar = () => {
-  // Replace this with your actual user logic
-  const [user, setUser] = useState(null); // null: guest, or { name: "User" }
+  // Replace this with real auth logic
+  const [user, setUser] = useState(null); // null=guest, or { name: "User" }
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(""); // open submenu
+  const [openDropdown, setOpenDropdown] = useState(""); // tracks which submenu is open
 
+  // Handle header color on scroll
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 60);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Icon for auth actions (Material Icons)
+  // Icon for Login/Register using Material Icons
   const renderAuthIcon = (label) => (
     <span
       className="material-icons align-middle text-pink-600 text-base mr-1"
@@ -277,7 +278,7 @@ const HeaderBar = () => {
     </span>
   );
 
-  // Menu item (shared by main/sub items for uniformity)
+  // Main and submenu item, styled the same (submenu indented)
   const MenuItem = ({ label, isSubItem }) => (
     <div
       className={`w-full cursor-pointer px-4 py-2 transition-colors duration-200
@@ -289,17 +290,15 @@ const HeaderBar = () => {
     </div>
   );
 
-  // Whole menu rendering
+  // Whole navigation menu including user greeting and submenus
   const renderMenu = () => (
     <nav className="mt-6 w-full" style={{ fontFamily: "Montserrat, sans-serif" }}>
       <ul className="space-y-1">
-        {/* User greeting */}
         <li
           className="px-4 py-2 text-base font-semibold text-gray-800 border-b border-gray-200"
         >
           {user ? `Hello, ${user.name}` : "Hello, Guest"}
         </li>
-        {/* Auth links */}
         <li className="flex items-center px-4 py-2 space-x-2 font-semibold text-gray-900 select-none">
           {renderAuthIcon("Login")}
           <span className="hover:text-pink-600 cursor-pointer">Login</span>
@@ -310,7 +309,6 @@ const HeaderBar = () => {
         <li>
           <hr className="my-2 border-t border-gray-200" />
         </li>
-        {/* Main + Submenu Items */}
         {MENU_STRUCTURE.filter(i => i.type === "main").map((item) => (
           <li key={item.label}>
             {item.subItems ? (
@@ -329,7 +327,6 @@ const HeaderBar = () => {
                     expand_more
                   </span>
                 </button>
-                {/* Submenu (styled same as main items, just indented) */}
                 {openDropdown === item.label && (
                   <ul>
                     {item.subItems.map((subLabel) => (
@@ -341,9 +338,8 @@ const HeaderBar = () => {
                 )}
               </div>
             ) : (
-              <MenuItem label={item.label} isSubItem={undefined} />
+              <MenuItem label={item.label} />
             )}
-            {/* Divider for major menu sections */}
             {["High Thinking", "High Talent"].includes(item.label) && (
               <hr className="my-2 border-t border-gray-200" />
             )}
@@ -361,7 +357,6 @@ const HeaderBar = () => {
         style={{ fontFamily: "Montserrat, sans-serif" }}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-2">
-          {/* Logo & Tagline */}
           <div className="flex items-center select-none">
             <div className="rounded-full border-4 border-yellow-300 w-7 h-7 flex items-center justify-center mr-2" />
             <div>
@@ -379,7 +374,6 @@ const HeaderBar = () => {
               </div>
             </div>
           </div>
-          {/* Menu Icon */}
           <div>
             <button
               aria-label="Menu"
@@ -392,23 +386,20 @@ const HeaderBar = () => {
             </button>
           </div>
         </div>
-        {/* Pink underline */}
         <div
           className={`h-1 w-full transition-colors duration-300 ${isScrolled ? "bg-pink-600" : "bg-transparent"
             }`}
         />
       </header>
 
-      {/* Menu Drawer */}
+      {/* 25% width side menu and 75% transparent glass overlay */}
       {isMenuOpen && (
         <>
-          {/* Overlay (glass effect, mostly transparent) */}
           <div
-            className="fixed inset-0 bg-white bg-opacity-10 backdrop-blur-md z-40"
+            className="fixed inset-0 bg-white bg-opacity-25 backdrop-blur-md z-40"
             onClick={() => setIsMenuOpen(false)}
             style={{ transition: "background 0.3s" }}
           />
-          {/* Side Menu */}
           <aside
             className="fixed top-0 right-0 h-full w-1/4 bg-white z-50 shadow-2xl flex flex-col"
             style={{
