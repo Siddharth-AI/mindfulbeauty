@@ -8,6 +8,7 @@ import Link from "next/link";
 import CustomerFeedbackSection from "../components/layout/testimonial";
 // ✅ Correct for /app directory
 import { useRouter } from "next/navigation";
+import ApplyPage from "./apply/page";
 
 function Home() {
   // Track which tab is selected
@@ -15,6 +16,12 @@ function Home() {
   const [startIdx, setStartIdx] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
+
+  const [showApplyPage, setShowApplyPage] = useState(false);
+
+  if (showApplyPage) {
+    return <ApplyPage />;
+  }
 
   const features = [
     {
@@ -719,23 +726,20 @@ function Home() {
       </section >
 
       {/* section 9 */}
-
-      < div className="w-full flex justify-center items-center py-10 bg-white" >
-        <Link href="">
-          <center>
-            <div className="relative w-4/5 max-w-[1550px] h-[306px] rounded-xl shadow-lg overflow-hidden cursor-pointer flex justify-center items-center bg-white">
-              <img
-                src="/assets/img/register.png"
-                alt="Register as a Professional Banner"
-                fill
-                className="object-cover"
-                priority
-                sizes="(min-width: 1200px) 1240px, 80vw"
-              />
-            </div>
-          </center>
-        </Link>
-      </div >
+      <div className="w-full flex justify-center items-center py-10 bg-white">
+        <div
+          className="relative w-4/5 max-w-[1550px] h-[306px] rounded-xl shadow-lg overflow-hidden cursor-pointer flex justify-center items-center bg-white"
+          onClick={() => router.push("/apply")} // route to the ApplyPage URL
+        >
+          <img
+            src="/assets/img/register.png"
+            alt="Register as a Professional Banner"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+      </div>
 
       {/* footer section */}
       < FooterBar />
