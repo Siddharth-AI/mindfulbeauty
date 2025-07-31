@@ -22,6 +22,7 @@ export default function RequireAuth({
       return;
     }
     // If user role info is available, also check roles
+
     if (
       user &&
       user.is_admin !== true &&

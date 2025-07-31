@@ -32,6 +32,7 @@ export const fetchUsers = createAsyncThunk<User[], void>("users/fetchAll", async
     if (!json.success) return rejectWithValue(json.error || "Fetch failed")
     return json.data
   } catch (error) {
+    console.log("error in fetch users", error)
     return rejectWithValue("Network error")
   }
 })
@@ -49,6 +50,8 @@ export const fetchSingleUser = createAsyncThunk<User, string>(
       if (!json.success) return rejectWithValue(json.error || "Fetch failed")
       return json.data
     } catch (error) {
+
+      console.log("error in fetchsingleusers", error)
       return rejectWithValue("Network error")
     }
   },
@@ -58,6 +61,7 @@ export const fetchSingleUser = createAsyncThunk<User, string>(
 export const createUser = createAsyncThunk<User, any>("users/create", async (userData, { rejectWithValue }) => {
   try {
     const token = getTokenFromLocalStorage()
+    console.log(token, "create user check token=====>>>>>>>>>>>>")
     const res = await fetch("/api/user", {
       method: "POST",
       headers: {
@@ -67,19 +71,25 @@ export const createUser = createAsyncThunk<User, any>("users/create", async (use
       body: JSON.stringify(userData),
     })
     const json = await res.json()
+    console.log(json, "json data check")
     if (!json.success) return rejectWithValue(json.error || json.errors?.[0] || "Create failed")
     return json.data
   } catch (error) {
+
+    console.log("error in create user", error)
     return rejectWithValue("Network error")
   }
 })
 
+// Update user
 // Update user
 export const updateUser = createAsyncThunk<User, { userId: string; userData: any }>(
   "users/update",
   async ({ userId, userData }, { rejectWithValue }) => {
     try {
       const token = getTokenFromLocalStorage()
+      console.log("🔄 Redux: Updating user", { userId, userData, token: token ? "present" : "missing" })
+
       const res = await fetch(`/api/user/${userId}`, {
         method: "PUT",
         headers: {
@@ -88,10 +98,15 @@ export const updateUser = createAsyncThunk<User, { userId: string; userData: any
         },
         body: JSON.stringify(userData),
       })
+
+      console.log("🔄 Redux: Response status", res.status)
       const json = await res.json()
+      console.log("🔄 Redux: Response data", json)
+
       if (!json.success) return rejectWithValue(json.error || json.errors?.[0] || "Update failed")
       return json.data
     } catch (error) {
+      console.error("🔄 Redux: Network error", error)
       return rejectWithValue("Network error")
     }
   },
@@ -109,6 +124,8 @@ export const deleteUser = createAsyncThunk<string, string>("users/delete", async
     if (!json.success) return rejectWithValue(json.error || "Delete failed")
     return userId
   } catch (error) {
+
+    console.log("error in delete user", error)
     return rejectWithValue("Network error")
   }
 })
@@ -131,6 +148,8 @@ export const updateUserStatus = createAsyncThunk<User, { userId: string; new_sta
       if (!json.success) return rejectWithValue(json.error || "Status update failed")
       return json.data
     } catch (error) {
+
+      console.log("error in update user", error)
       return rejectWithValue("Network error")
     }
   },
@@ -149,6 +168,8 @@ export const fetchUserStatusHistory = createAsyncThunk<UserStatusHistory[], stri
       if (!json.success) return rejectWithValue(json.error || "Fetch failed")
       return json.data
     } catch (error) {
+
+      console.log("error in fetchStatusHistory", error)
       return rejectWithValue("Network error")
     }
   },
@@ -167,6 +188,8 @@ export const fetchAllUserStatusHistory = createAsyncThunk<UserStatusHistory[], v
       if (!json.success) return rejectWithValue(json.error || "Fetch failed")
       return json.data
     } catch (error) {
+
+      console.log("error in fetchalluserStatusHistory", error)
       return rejectWithValue("Network error")
     }
   },
@@ -221,7 +244,7 @@ const userSlice = createSlice({
     clearStatusHistory(state) {
       state.statusHistory = []
     },
-    resetUserState(state) {
+    resetUserState() {
       return initialState
     },
   },

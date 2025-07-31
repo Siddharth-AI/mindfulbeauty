@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -50,6 +52,7 @@ const CompleteHistoryModal: React.FC<CompleteHistoryModalProps> = ({
         setError(data.error || "Failed to fetch history");
       }
     } catch (err) {
+      console.log("error fetching complete history:", err);
       setError("Network error occurred");
     } finally {
       setLoading(false);

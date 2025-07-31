@@ -6,7 +6,7 @@ import { NextRequest } from 'next/server';
 // import { successResponse, errorResponse } from '@/lib/utils/api-response';
 // import { getUserFromRequest } from '@/lib/api/auth-middleware';
 
-export async function GET(request: NextRequest, { params }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     await getUserFromRequest(request, { required: true });
     const data = await getUserStatusHistory(params.id, 2); // LIMIT 2

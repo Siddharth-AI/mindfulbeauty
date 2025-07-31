@@ -54,7 +54,7 @@ const Modal: React.FC<ModalProps> = ({
       <div className="fixed inset-0 z-[9999] overflow-y-auto">
         {/* Background overlay */}
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          className="fixed inset-0 bg-black/40  transition-opacity blur-xl"
           onClick={onClose}
           aria-hidden="true"
         />

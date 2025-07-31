@@ -59,6 +59,7 @@ import {
   setPage as setUserPage,
   clearError as clearUserError,
   setSearchQuery as setUserSearchQuery,
+  fetchSingleUser,
 } from "@/app/store/slice/userSlice";
 import { useRouter } from "next/navigation";
 import { toastSuccess, toastError } from "@/app/components/common/toastService";
@@ -146,6 +147,8 @@ const DashboardPage = () => {
     searchQuery: userSearchQuery,
   } = useAppSelector((state) => state.users);
 
+  console.log(user, "user data in dashboard");
+
   // Local state
   const [activeTab, setActiveTab] = useState<"all" | "salon" | "freelancer">(
     "all"
@@ -180,12 +183,6 @@ const DashboardPage = () => {
     mobile_no: "",
     address: "",
     location: "",
-    status: "pending" as
-      | "pending"
-      | "approved"
-      | "active"
-      | "inactive"
-      | "suspended",
   });
 
   // Load user from token on app start
@@ -226,6 +223,7 @@ const DashboardPage = () => {
       toastSuccess("Logged out successfully!");
       router.push("/admin");
     } catch (error) {
+      console.log("logout error", error);
       toastError("Logout failed");
     }
   };
@@ -276,7 +274,6 @@ const DashboardPage = () => {
           })
         ).unwrap();
         toastSuccess("Request status updated successfully!");
-
         // If approved, show success message about user creation and request deletion
         if (updateData.status === "approved") {
           toastSuccess("User created and registration request completed!");
@@ -341,8 +338,10 @@ const DashboardPage = () => {
             userData: userFormData,
           })
         ).unwrap();
+        await dispatch(fetchSingleUser(editingUser.id));
         toastSuccess("User updated successfully!");
       } else {
+        console.log(userFormData, "checking userfrom data");
         await dispatch(createUser(userFormData)).unwrap();
         toastSuccess("User created successfully!");
       }
@@ -356,7 +355,6 @@ const DashboardPage = () => {
         mobile_no: "",
         address: "",
         location: "",
-        status: "pending",
       });
     } catch (error: any) {
       toastError(error.message || "Operation failed");
@@ -373,9 +371,9 @@ const DashboardPage = () => {
       mobile_no: user.mobile_no,
       address: user.address || "",
       location: user.location || "",
-      status: user.status || "pending",
     });
     setShowUserForm(true);
+    dispatch(fetchSingleUser(user.id));
   };
 
   const handleDeleteUser = async (userId: string) => {
@@ -770,7 +768,7 @@ const DashboardPage = () => {
                       </div>
                     ) : (
                       <>
-                        <div className="overflow-x-auto">
+                        <div className="h-screen">
                           <table
                             className={`min-w-full divide-y ${
                               darkMode ? "divide-gray-700" : "divide-gray-200"
@@ -1278,7 +1276,6 @@ const DashboardPage = () => {
               mobile_no: "",
               address: "",
               location: "",
-              status: "pending",
             });
           }}
           title={editingUser ? "Edit User" : "Create New User"}
@@ -1374,7 +1371,7 @@ const DashboardPage = () => {
                   <option value="freelancer">Freelancer</option>
                 </select>
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-sm font-medium mb-1">Status</label>
                 <select
                   value={userFormData.status}
@@ -1396,7 +1393,7 @@ const DashboardPage = () => {
                   <option value="inactive">Inactive</option>
                   <option value="suspended">Suspended</option>
                 </select>
-              </div>
+              </div> */}
             </div>
 
             <div>
@@ -1443,7 +1440,6 @@ const DashboardPage = () => {
                     mobile_no: "",
                     address: "",
                     location: "",
-                    status: "pending",
                   });
                 }}
                 className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-colors">

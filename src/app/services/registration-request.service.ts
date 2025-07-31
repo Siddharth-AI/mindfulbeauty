@@ -10,7 +10,6 @@ import { addRequestStatusHistory } from "../lib/database/queries/request-status-
 import { approveRegistrationRequestAndCreateUser } from "../lib/database/queries/users"
 import supabase from "../lib/database/supabase"
 
-
 export const handleCreateRequest = async (data: any, userId?: string) => {
   // Optionally attach created_by
   return await createRegistrationRequest({ ...data, created_by: userId })
@@ -19,7 +18,6 @@ export const handleCreateRequest = async (data: any, userId?: string) => {
 export const handleGetRequests = async () => getRegistrationRequests()
 
 export const handleGetRequestById = async (id: string) => getRegistrationRequestById(id)
-
 
 export const handleStatusChange = async ({
   id,
@@ -65,7 +63,6 @@ export const handleStatusChange = async ({
     return updatedRequest
   }
 }
-
 
 export const findPendingRegistrationRequest = async (email: string, mobile_no?: string) => {
   let query = supabase
