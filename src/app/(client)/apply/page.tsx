@@ -3,13 +3,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/app/store/hooks";
-// import {
-//   checkUserExistence,
-//   submitRegistrationRequest,
-//   clearError,
-//   clearSuccess,
-//   clearExistenceCheck,
-// } from "@/app/store/slice/applySlice";
+
 import {
   toastSuccess,
   toastError,
@@ -22,6 +16,7 @@ import {
   clearSuccess,
   submitRegistrationRequest,
 } from "@/app/store/slice/applySlice";
+import { useRouter } from "next/navigation";
 
 export default function ApplyPage() {
   const dispatch = useAppDispatch();
@@ -43,6 +38,7 @@ export default function ApplyPage() {
     location: "",
   });
 
+  const router = useRouter();
   // Handle success/error messages
   useEffect(() => {
     if (success && message) {
@@ -149,6 +145,7 @@ export default function ApplyPage() {
         remark: "",
       })
     );
+    router.push("/"); // Redirect to success page
   };
 
   const canSubmit =
@@ -235,7 +232,7 @@ export default function ApplyPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gray-300 text-white hover:bg-gray-400 font-semibold text-lg rounded py-2 transition disabled:opacity-50">
+                className="w-full bg-black text-white hover:bg-[#202020] font-semibold text-lg rounded py-2 transition disabled:opacity-50">
                 {loading ? "Generating..." : "Generate OTP"}
               </button>
             </form>
@@ -249,7 +246,7 @@ export default function ApplyPage() {
                     value="salon"
                     checked={form.userType === "salon"}
                     onChange={handleRadio}
-                    className="accent-white mr-2"
+                    className="accent-black mr-2"
                   />
                   Salon
                 </label>
@@ -260,7 +257,7 @@ export default function ApplyPage() {
                     value="freelancer"
                     checked={form.userType === "freelancer"}
                     onChange={handleRadio}
-                    className="accent-white mr-2"
+                    className=" accent-black mr-2"
                   />
                   Freelancer
                 </label>
@@ -340,7 +337,7 @@ export default function ApplyPage() {
               <button
                 type="submit"
                 disabled={!canSubmit}
-                className="w-full bg-gray-300 text-white hover:bg-gray-400 font-semibold text-lg rounded py-2 mt-3 transition disabled:opacity-50 disabled:cursor-not-allowed">
+                className="w-full bg-black text-white hover:bg-[#202020] font-semibold text-lg rounded py-2 mt-3 transition disabled:opacity-50 disabled:cursor-not-allowed">
                 {loading ? (
                   <div className="flex items-center justify-center">
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>

@@ -954,6 +954,7 @@ const DashboardPage = () => {
                                                 statusUpdateMap[item.id]
                                                   ?.description || ""
                                               }
+                                              required
                                               onChange={(e) =>
                                                 setStatusUpdateMap((prev) => ({
                                                   ...prev,

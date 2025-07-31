@@ -216,8 +216,8 @@ function Home() {
           <div className="relative w-full xl:h-[80px] lg:h-[80px] md:h-[65px] sm:h-[70px] h-[70px] text-center" />
 
           {/* Absolutely positioned heading text */}
-          <div className="absolute top-1 left-0 right-0 text-center max-lg:top-4 max-md:top-5 max-sm:top-2 px-4">
-            <div className="relative w-full xl:h-[80px] lg:h-[80px] md:h-[65px] sm:h-[70px] h-[70px] text-center bg-black/50 text-white">
+          <div className="absolute top-2 left-0 right-0 text-center max-lg:top-4 max-md:top-5 max-sm:top-2 px-4">
+            <div className="flex mt-20 items-center relative w-full xl:h-[80px] lg:h-[80px] md:h-[65px] sm:h-[70px] h-[70px] text-center bg-black/50 text-white">
               <h1
                 className="
               font- light
@@ -231,9 +231,8 @@ function Home() {
             text-[24px]
             text-mindfulWhite
             mx-auto
-            mix-blend-overlay
-            "
-                style={{ marginTop: "125px", color: "white" }}>
+             text-white
+            ">
                 Where would you like to get your beauty service
               </h1>
             </div>
