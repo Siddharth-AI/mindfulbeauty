@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { supabase, supabaseAdmin } from "../supabase"
 import type { User, CreateUserData, UpdateUserData, UserStatusHistory } from "../../types/user"
 
@@ -7,7 +8,6 @@ export const findUserByEmail = async (email: string): Promise<User | null> => {
       .from("user")
       .select("*")
       .eq("email", email.toLowerCase())
-      .eq("is_active", true)
       .eq("is_delete", false)
       .maybeSingle()
 
@@ -29,7 +29,6 @@ export const findUserByMobile = async (mobile: string): Promise<User | null> => 
       .from("user")
       .select("*")
       .eq("mobile_no", mobile)
-      .eq("is_active", true)
       .eq("is_delete", false)
       .maybeSingle()
 
@@ -62,6 +61,7 @@ export const createUser = async (userData: CreateUserData): Promise<User> => {
         location: userData.location || null,
         is_active: true,
         is_delete: false,
+        is_admin: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         created_by: userData.created_by || null,
@@ -81,7 +81,6 @@ export const createUser = async (userData: CreateUserData): Promise<User> => {
   }
 }
 
-// This is the missing function you referenced
 export const createUserFromRequest = async (requestData: any, createdBy?: string): Promise<User> => {
   try {
     // Generate a default password hash for approved users
@@ -99,6 +98,7 @@ export const createUserFromRequest = async (requestData: any, createdBy?: string
         status: "approved", // Auto-approved users start as approved
         is_active: true,
         is_delete: false,
+        is_admin: false,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         created_by: createdBy || null,
@@ -118,7 +118,6 @@ export const createUserFromRequest = async (requestData: any, createdBy?: string
   }
 }
 
-// Enhanced function to approve registration request and create user
 export const approveRegistrationRequestAndCreateUser = async (
   requestId: string,
   approvedBy: string,
@@ -213,6 +212,56 @@ export const checkUserExists = async (
   }
 }
 
+// Check if user exists in both user table and registration_request table
+export const checkUserExistsInBothTables = async (
+  email: string,
+  mobile: string,
+): Promise<{ userExists: boolean; requestExists: boolean; message?: string }> => {
+  try {
+    // Check in user table
+    const { data: userData, error: userError } = await supabase
+      .from("user")
+      .select("id, email, mobile_no, is_active")
+      .eq("is_delete", false)
+      .or(`email.eq.${email.toLowerCase()},mobile_no.eq.${mobile}`)
+
+    if (userError) {
+      throw new Error(`Failed to check user table: ${userError.message}`)
+    }
+
+    // Check in registration_request table
+    const { data: requestData, error: requestError } = await supabase
+      .from("registration_request")
+      .select("id, email, mobile_no, status")
+      .or(`email.eq.${email.toLowerCase()},mobile_no.eq.${mobile}`)
+
+    if (requestError) {
+      throw new Error(`Failed to check registration_request table: ${requestError.message}`)
+    }
+
+    const userExists = userData && userData.length > 0
+    const requestExists = requestData && requestData.length > 0
+
+    let message = ""
+    if (userExists) {
+      const user = userData[0]
+      if (user.is_active) {
+        message = "You are already registered and active. Please login instead."
+      } else {
+        message = "Your account exists but is inactive. Please contact support."
+      }
+    } else if (requestExists) {
+      const request = requestData[0]
+      message = `You already have a ${request.status} registration request. Please wait for approval.`
+    }
+
+    return { userExists: !!userExists, requestExists: !!requestExists, message }
+  } catch (error) {
+    console.error("Error in checkUserExistsInBothTables:", error)
+    throw error
+  }
+}
+
 export const getAllUsers = async (excludeAdmins = false): Promise<User[]> => {
   let query = supabase.from("user").select("*").eq("is_delete", false)
   if (excludeAdmins) query = query.eq("is_admin", false)
@@ -244,7 +293,6 @@ export const softDeleteUserRecord = async (id: string, updated_by?: string): Pro
   return data as User
 }
 
-// This is the missing updateUserStatusInDB function
 export const updateUserStatusInDB = async (
   id: string,
   status: "pending" | "approved" | "active" | "inactive" | "suspended",
@@ -275,7 +323,6 @@ export const updateUserStatusInDB = async (
   }
 }
 
-// Enhanced function to change user status using PostgreSQL function
 export const changeUserStatus = async (
   userId: string,
   newStatus: "pending" | "approved" | "active" | "inactive" | "suspended",

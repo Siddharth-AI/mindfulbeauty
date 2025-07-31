@@ -3,7 +3,7 @@ import { getRequestStatusHistory } from '@/app/lib/database/queries/request-stat
 import { errorResponse, successResponse } from '@/app/lib/utils/api-response';
 import { NextRequest } from 'next/server';
 
-export async function GET(request: NextRequest, { params }) {
+export async function GET(request: NextRequest, { params }: { params: { request_id: string } }) {
   try {
     await getUserFromRequest(request, { required: true });
     const data = await getRequestStatusHistory(params.request_id);

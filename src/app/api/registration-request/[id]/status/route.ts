@@ -12,6 +12,10 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
   if (validOrRes instanceof Response) return validOrRes
   console.log(user, "for patch=>>>>>>>>>")
 
+  if (!user) {
+    return errorResponse("User not found", 401)
+  }
+
   try {
     const updated = await handleStatusChange({
       id: params.id,

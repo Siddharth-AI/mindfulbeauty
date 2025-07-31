@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import jwt, { SignOptions, JwtPayload } from 'jsonwebtoken';
 import { AUTH_CONFIG } from './config';
 
@@ -10,7 +12,7 @@ export interface TokenPayload extends JwtPayload {
   is_admin: boolean;
 }
 
-export const generateAccessToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): string => {
+export const generateAccessToken = (payload: Omit<TokenPayload, 'iat' | 'exp'>): any => {
   const signOptions: SignOptions = {
     expiresIn: AUTH_CONFIG.JWT_EXPIRES_IN,
     issuer: 'mindfulbeauty',

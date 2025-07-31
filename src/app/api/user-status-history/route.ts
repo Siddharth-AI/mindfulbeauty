@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server"
 export async function GET(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request, { required: true })
-    if (!user.is_admin) return errorResponse("Forbidden", 403)
+    if (!user?.is_admin) return errorResponse("Forbidden", 403)
 
     const history = await getAllUserStatusHistory()
     return successResponse(history, "All user status history fetched successfully")

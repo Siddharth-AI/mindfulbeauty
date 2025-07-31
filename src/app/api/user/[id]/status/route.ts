@@ -18,6 +18,9 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
 
     const { new_status, remark } = validOrRes
 
+    if (!user) {
+      return errorResponse("user not found", 401)
+    }
     // Use the enhanced function that handles status change and logging
     const updatedUser = await changeUserStatus(params.id, new_status, user.id, remark)
 

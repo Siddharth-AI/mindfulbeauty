@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server"
 export async function POST(request: NextRequest) {
   try {
     const user = await getUserFromRequest(request, { required: true })
-    if (!user.is_admin) return errorResponse("Forbidden", 403)
+    if (!user?.is_admin) return errorResponse("Forbidden", 403)
 
     const body = await request.json()
     const { requestData } = body

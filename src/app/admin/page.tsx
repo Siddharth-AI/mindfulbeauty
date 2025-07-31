@@ -19,7 +19,6 @@ export default function AdminLogin() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const { loading } = useAppSelector((state) => state.auth);
-
   const [showPassword, setShowPassword] = useState(false);
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +32,7 @@ export default function AdminLogin() {
     const result = await dispatch(login({ identifier, password }));
     if (login.fulfilled.match(result)) {
       toastSuccess("Login successful!");
-      setTimeout(() => router.push("/admin/dashboard"), 1200);
+      setTimeout(() => router.push("/admin/dashboard"), 200);
     } else if (login.rejected.match(result)) {
       toastError((result.payload as string) || "Login failed");
     }

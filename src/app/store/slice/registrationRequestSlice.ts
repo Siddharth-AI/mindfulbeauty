@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { getTokenFromLocalStorage } from "./authSlice"
@@ -138,6 +139,8 @@ export const fetchStatusHistory = createAsyncThunk<any[], string>(
       if (!json.success) return rejectWithValue(json.error || "Fetch failed")
       return json.data
     } catch (error) {
+
+      console.log("error in fetchstatusHistory", error)
       return rejectWithValue("Network error")
     }
   },

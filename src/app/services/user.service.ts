@@ -92,7 +92,6 @@ export const findPendingRegistrationRequest = async (email: string, mobile_no?: 
 }
 
 
-
 export const getUsers = async ({ excludeAdmins = false } = {}) => {
   return await getAllUsers(excludeAdmins)
 }
@@ -114,13 +113,26 @@ export const addUser = async (userData: CreateUserData, created_by?: string) => 
 }
 
 export const editUser = async (id: string, data: UpdateUserData, updated_by?: string) => {
+  console.log("🔨 Service: editUser called with:", { id, data, updated_by })
+
   // Prevent email/mobile_no update clashing
   if (data.email || data.mobile_no) {
-    const { emailExists, mobileExists } = await checkUserExists(data.email || "", data.mobile_no || "")
-    if (data.email && emailExists) throw new Error("Email already registered")
-    if (data.mobile_no && mobileExists) throw new Error("Mobile number already registered")
+    console.log("🔨 Service: Checking for existing email/mobile")
+    const { emailExists, mobileExists } = await checkUserExists(data.email || "", data.mobile_no || "", id)
+    if (data.email && emailExists) {
+      console.log("🔨 Service: Email already exists")
+      throw new Error("Email already registered")
+    }
+    if (data.mobile_no && mobileExists) {
+      console.log("🔨 Service: Mobile already exists")
+      throw new Error("Mobile number already registered")
+    }
   }
-  return await updateUser(id, { ...data, updated_by })
+
+  console.log("🔨 Service: Calling updateUser in database")
+  const result = await updateUser(id, { ...data, updated_by })
+  console.log("🔨 Service: Database update result:", result)
+  return result
 }
 
 export const softDeleteUser = async (id: string, updated_by?: string) => {
@@ -136,4 +148,21 @@ export const updateUserStatus = async (
 ) => {
   if (!updated_by) throw new Error("updated_by is required")
   return await changeUserStatus(id, newStatus, updated_by, remark)
+}
+
+// Add missing functions that might be referenced elsewhere
+export const createUserFromRequest = async (requestData: any, createdBy?: string) => {
+  const defaultPassword = "password123" // You should hash this
+  const hashedPassword = await hashPassword(defaultPassword)
+
+  return await createUser({
+    name: requestData.name,
+    email: requestData.email,
+    mobile_no: requestData.mobile_no || "",
+    password: hashedPassword,
+    type: requestData.type,
+    location: requestData.location,
+    status: "approved",
+    created_by: createdBy,
+  })
 }
